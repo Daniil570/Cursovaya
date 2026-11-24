@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Карта Вологды</title>
+  <link rel="preconnect" href="https://tile.openstreetmap.org">
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="top">
+  <h1>Карта Вологды</h1>
+  <nav id="nav"></nav>
+</header>
+
+<main class="layout">
+  <aside class="side">
+    <div class="search-wrap">
+      <div class="search">
+        <input id="q" type="search" placeholder="Название или адрес" aria-label="Поиск по словам"
+               role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="searchSuggestions">
+        <button id="searchBtn" class="btn primary">Найти</button>
+      </div>
+      <ul id="searchSuggestions" class="search-suggestions" role="listbox" hidden></ul>
+    </div>
+    <fieldset class="filters">
+      <legend>Категории</legend>
+      <div id="cats"></div>
+      <button id="resetBtn" class="link">Сбросить фильтры</button>
+    </fieldset>
+    <p id="count" class="muted"></p>
+    <ul id="list" class="list"></ul>
+  </aside>
+  <div id="map"></div>
+</main>
+
+<div id="toast" role="status"></div>
+
+<dialog id="authDlg">
+  <form id="authForm" method="dialog">
+    <h2 id="authTitle">Вход</h2>
+    <label>Имя пользователя<input id="aUser" required></label>
+    <label id="aMailRow" hidden>Почта<input id="aMail" type="email"></label>
+    <label>Пароль
+      <span class="password-field">
+        <input id="aPass" type="password" required minlength="6" autocomplete="current-password">
+        <button type="button" class="password-toggle" aria-label="Показать пароль" aria-pressed="false" data-password-toggle="aPass">Показать</button>
+      </span>
+    </label>
+    <div class="consent" id="consentRow" hidden>
+      <label><input type="checkbox" id="aConsentPersonal"> Я даю согласие на обработку персональных данных</label>
+      <label><input type="checkbox" id="aConsentPolicy"> Я согласен с <a href="/privacy" target="_blank" rel="noopener">политикой конфиденциальности</a></label>
+    </div>
+    <p class="error" id="authErr"></p>
+    <div class="row">
+      <button class="btn primary" id="authOk" value="ok">Войти</button>
+      <button type="button" class="btn" data-close>Отмена</button>
+    </div>
+    <button type="button" class="link" id="authSwitch">Нет аккаунта? Зарегистрироваться</button>
+  </form>
+</dialog>
+
+<dialog id="objDlg">
+  <form id="objForm" method="dialog">
+    <div class="dialog-heading">
+      <h2 id="objTitle">Новая точка</h2>
+      <button type="button" class="btn minimize-dialog" id="minimizeObjBtn" aria-label="Свернуть форму">Свернуть</button>
+    </div>
+    <label>Название<input id="oName" required maxlength="150"></label>
+    <label>Категория<select id="oCat" required></select></label>
+    <label>Адрес<input id="oAddr" required></label>
+    <label>Описание<textarea id="oDesc" rows="3"></textarea></label>
+    <div class="row">
+      <label>Телефон<input id="oPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+7-900-123-45-67"></label>
+      <label>Часы работы
+        <span class="time-range">
+          <input id="oHoursFrom" type="time" aria-label="Время открытия">
+          <span>—</span>
+          <input id="oHoursTo" type="time" aria-label="Время закрытия">
+        </span>
+        <small id="oHoursLegacy" class="field-hint" hidden></small>
+      </label>
+    </div>
+    <div class="row">
+      <label>Широта<input id="oLat" required inputmode="decimal"></label>
+      <label>Долгота<input id="oLon" required inputmode="decimal"></label>
+    </div>
+    <button type="button" class="btn" id="pickBtn">Указать на карте</button>
+    <p class="error" id="objErr"></p>
+    <div class="row">
+      <button class="btn primary" id="objOk" value="ok">Сохранить</button>
+      <button type="button" class="btn" data-close>Отмена</button>
+    </div>
+  </form>
+</dialog>
+
+<div id="objDock" class="dialog-dock" hidden>
+  <span id="objDockTitle">Форма точки свернута</span>
+  <button type="button" class="btn primary" id="restoreObjBtn">Открыть</button>
+</div>
+
+<dialog id="reqDlg">
+  <div class="dialog-heading">
+    <h2 id="reqTitle">Заявки</h2>
+    <button type="button" class="btn" data-close>Закрыть</button>
+  </div>
+  <div id="reqList"></div>
+</dialog>
+
+<script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script defer src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
